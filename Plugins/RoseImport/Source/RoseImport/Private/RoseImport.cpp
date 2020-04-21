@@ -1477,7 +1477,7 @@ void FRoseImportModule::PluginButtonClicked()
 		LayerInfos.Add(LayerInfo);
 	}
 
-	ELandscapeImportAlphamapType p = ELandscapeImportAlphamapType::Additive;
+	//ELandscapeImportAlphamapType p = ELandscapeImportAlphamapType::Additive;
 
 	/* Landscape->Import(
 		FGuid::NewGuid(), 
