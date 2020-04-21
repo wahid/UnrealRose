@@ -165,12 +165,12 @@ UPackage* GetOrMakePackage(const FString& PackageName, FString& AssetName) {
 
 	AssetToolsModule.Get().CreateUniqueAssetName(BasePackageName, TEXT(""), FinalPackageName, AssetName);
 
-	//UE_LOG(RosePlugin, Log, TEXT("Making Package - %s, %s, %s, %s"), *RosePackageName, *PackageName, *AssetName, *BasePackageName, *FinalPackageName);
+	UE_LOG(LogTemp, Log, TEXT("Making Package - %s, %s, %s, %s"), *RosePackageName, *PackageName, *AssetName, *BasePackageName, *FinalPackageName);
 
 	UPackage* Package = CreatePackage(NULL, *FinalPackageName);
 
 	if (Package == NULL) {
-		//UE_LOG(RosePlugin, Error, TEXT("Failed to create package - %s"), *FinalPackageName);
+		UE_LOG(LogTemp, Error, TEXT("Failed to create package - %s"), *FinalPackageName);
 	}
 	return Package;
 }
@@ -201,7 +201,10 @@ UTexture* ImportTexture(const FString& PackageName, FString& AssetName, const FS
 	}
 
 	TArray<uint8> DataBinary;
-	if (!FFileHelper::LoadFileToArray(DataBinary, *SourcePath)) {
+
+	const FString newPath = SourcePath.Replace(TEXT("DDS"), TEXT("png"));
+
+	if (!FFileHelper::LoadFileToArray(DataBinary, *newPath)) {
 		//UE_LOG(RosePlugin, Warning, TEXT("Unable to read texture from source."));
 		return NULL;
 	}
@@ -209,14 +212,13 @@ UTexture* ImportTexture(const FString& PackageName, FString& AssetName, const FS
 	
 	const uint8* PtrTexture = DataBinary.GetData();
 
-	
-	UTextureFactory* TextureFact = (UTextureFactory*)UTextureFactory::StaticClass();  //new UTextureFactory();
+	UTextureFactory* TextureFact = NewObject<UTextureFactory>();
 
 	TextureFact->AddToRoot();
 
 	UTexture* Texture = (UTexture*)TextureFact->FactoryCreateBinary(
 		UTexture2D::StaticClass(), Package, *AssetName,
-		RF_Standalone | RF_Public, NULL, TEXT("dds"),
+		RF_Standalone | RF_Public, NULL, TEXT("png"),
 		PtrTexture, PtrTexture + DataBinary.Num(), GWarn);
 
 	if (Texture != NULL)
@@ -258,12 +260,12 @@ UMaterial* GetOrMakeBaseMaterial(const Zsc::Texture& MatInfo) {
 
 	//UE_LOG(RosePlugin, Log, TEXT("Creating Base Material!"));
 
-	UMaterialFactoryNew* MaterialFactory = (UMaterialFactoryNew*)UMaterialFactoryNew::StaticClass();
+	UMaterialFactoryNew* MaterialFactory = NewObject<UMaterialFactoryNew>(); // (UMaterialFactoryNew*)UMaterialFactoryNew::StaticClass();
 
 	UPackage* Package = GetOrMakePackage(TEXT("/"), MaterialName);
 
-	Material = (UMaterial*)MaterialFactory->FactoryCreateNew(
-		UMaterial::StaticClass(), Package, *MaterialName, RF_Standalone | RF_Public, NULL, GWarn);
+	Material = (UMaterial*)MaterialFactory->FactoryCreateNew(UMaterial::StaticClass(), Package, *MaterialName, RF_Standalone | RF_Public, NULL, GWarn);
+
 	if (Material == NULL) {
 		return NULL;
 	}
@@ -297,7 +299,6 @@ UMaterial* GetOrMakeBaseMaterial(const Zsc::Texture& MatInfo) {
 	}
 
 	UMaterialExpressionTextureSampleParameter2D* UnrealTextureExpression = NewObject<UMaterialExpressionTextureSampleParameter2D>(Material);
-		//UMaterialExpressionTextureSampleParameter2D::StaticClass(), 
 		
 	Material->Expressions.Add(UnrealTextureExpression);
 	UnrealTextureExpression->ConnectExpression(&Material->BaseColor, 0);
@@ -325,11 +326,7 @@ UMaterialInterface* ImportMaterial(const FString& PackageName, FString& Material
 		return NULL;
 	}
 
-	UMaterialInstanceConstant* Material = NewObject<UMaterialInstanceConstant>();
-		
-	/*CastChecked<UMaterialInstanceConstant>(
-	StaticConstructObject(UMaterialInstanceConstant::StaticClass(), Package, *MaterialName, RF_Standalone | RF_Public));*/
-
+	UMaterialInstanceConstant* Material = NewObject<UMaterialInstanceConstant>(Package, *MaterialName, RF_Standalone | RF_Public);
 
 	if (Material == NULL) {
 		return NULL;
@@ -855,7 +852,7 @@ UK2Node_VariableGet* CreateVarGetNode(UEdGraph* Graph, const FName& VariableName
 template<typename CurveType>
 CurveType* CreateCurveObject(UObject* PackagePtr, FName& AssetName)
 {
-	return CastChecked<CurveType>(NewObject<CurveType>(PackagePtr, AssetName, RF_Transient));
+	return NewObject<CurveType>(PackagePtr, AssetName, RF_Transient);
 }
 
 
@@ -890,8 +887,8 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 			return NULL;
 		}
 
-		UStaticMesh* StaticMesh = CastChecked<UStaticMesh>(NewObject<UStaticMesh>());
-		// StaticConstructObject(UStaticMesh::StaticClass(), Package, *ModelName, RF_Standalone | RF_Public));
+		UStaticMesh* StaticMesh = NewObject<UStaticMesh>(Package, *ModelName, RF_Standalone | RF_Public);
+
 		if (StaticMesh == NULL) {
 			return NULL;
 		}
@@ -910,10 +907,7 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 		StaticMesh->LightMapCoordinateIndex = 1;
 
 		// new(StaticMesh->GetSourceModels()) FStaticMeshSourceModel();
-
-		if (StaticMesh->GetSourceModels().Num() == 0) {
-			return NULL;
-		}
+		new(StaticMesh->SourceModels) FStaticMeshSourceModel();
 
 		FStaticMeshSourceModel& SrcModel = StaticMesh->GetSourceModels()[0];
 
@@ -995,8 +989,9 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 
 		FString MeshCompNameX = FString::Printf(TEXT("Part_%d_Component"), j);
 		UStaticMeshComponent* MeshComp = NewObject< UStaticMeshComponent>();
-			/* (UStaticMeshComponent*)StaticConstructObject(UStaticMeshComponent::StaticClass(),
-				BPPackage, *MeshCompNameX, RF_Transient); */
+		
+		(UStaticMeshComponent*)NewObject<UStaticMeshComponent>(BPPackage, *MeshCompNameX, RF_Transient);
+
 		//MeshComp->StaticMesh = StaticMesh;
 
 		MeshComp->SetStaticMesh(StaticMesh);
@@ -1127,19 +1122,19 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 
 			if (UsesRotation) {
 				FTTVectorTrack VTrack;
-				VTrack.SetTrackName("Rotation", NULL);
+				VTrack.SetTrackName("Rotation", TLTmpl);
 				VTrack.CurveVector = RCurve;
 				TLTmpl->VectorTracks.Add(VTrack);
 			}
 			if (UsesPosition) {
 				FTTVectorTrack VTrack;
-				VTrack.SetTrackName("Position", NULL);
+				VTrack.SetTrackName("Position", TLTmpl);
 				VTrack.CurveVector = PCurve;
 				TLTmpl->VectorTracks.Add(VTrack);
 			}
 			if (UsesScale) {
 				FTTVectorTrack VTrack;
-				VTrack.SetTrackName("Scale", NULL);
+				VTrack.SetTrackName("Scale", TLTmpl);
 				VTrack.CurveVector = SCurve;
 				TLTmpl->VectorTracks.Add(VTrack);
 			}
@@ -1162,13 +1157,13 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 				BreakVecNode->FindPin(TEXT("X"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Pitch")));
 				BreakVecNode->FindPin(TEXT("Y"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Yaw")));
 				BreakVecNode->FindPin(TEXT("Z"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Roll")));
-				MakeRotNode->GetReturnValuePin()->MakeLinkTo(SetRotNode->FindPin(TEXT("NewRotation")));
+				//MakeRotNode->GetReturnValuePin()->MakeLinkTo(SetRotNode->FindPin(TEXT("NewRotation")));
 			}
 
 			if (UsesPosition) {
 				UK2Node_CallFunction* SetPosNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeLocation"));
-				PrevExecPin->MakeLinkTo(SetPosNode->GetExecPin());
-				PrevExecPin = SetPosNode->GetThenPin();
+				//PrevExecPin->MakeLinkTo(SetPosNode->GetExecPin());
+				//PrevExecPin = SetPosNode->GetThenPin();
 
 				GetNode->GetValuePin()->MakeLinkTo(SetPosNode->FindPin(TEXT("self")));
 				TLNode->FindPin(TEXT("Position"))->MakeLinkTo(SetPosNode->FindPin(TEXT("NewLocation")));
@@ -1263,6 +1258,8 @@ void FRoseImportModule::PluginButtonClicked()
 				ImportWorldZscModel("JDTC", meshsc, i);
 			}
 		}
+
+		UE_LOG(LogTemp, Log, TEXT("[IMPORT_BUILDINGS] ZSC loaded: %d"), meshsc.models.Num());
 	}
 	if (IMPORT_OBJECTS) {
 		Zsc meshsd(*(RoseBasePath + TEXT("3DDATA/JUNON/LIST_DECO_JDT.ZSC")));
@@ -1271,7 +1268,9 @@ void FRoseImportModule::PluginButtonClicked()
 				ImportWorldZscModel("JDTD", meshsd, i);
 			}
 		}
-	}
+
+		UE_LOG(LogTemp, Log, TEXT("[IMPORT_OBJECTS] ZSC loaded: %d"), meshsd.models.Num());
+	}	
 
 	const FString CnstPackageName = TEXT("/MAPS");
 
@@ -1284,7 +1283,6 @@ void FRoseImportModule::PluginButtonClicked()
 	const float HIM_HEIGHT_MID = (HIM_HEIGHT_MAX - HIM_HEIGHT_MIN) / 2;
 	const float HIM_HEIGHT_MUL = (UEL_HEIGHT_MAX - UEL_HEIGHT_MIN) / (HIM_HEIGHT_MAX - HIM_HEIGHT_MIN);
 	const float UEL_ZSCALE = (UEL_HEIGHT_WMAX - UEL_HEIGHT_WMIN) / (HIM_HEIGHT_MAX - HIM_HEIGHT_MIN);
-
 
 	int startX = 31;
 	int startY = 30;
@@ -1418,9 +1416,8 @@ void FRoseImportModule::PluginButtonClicked()
 		}
 	}
 
-	//UE_LOG(RosePlugin, Log, TEXT("Imported map height bounds were: %f, %f"), MinHeight, MaxHeight);
-
-
+	UE_LOG(LogTemp, Log, TEXT("Imported map height bounds were: %f, %f"), MinHeight, MaxHeight);
+	return;
 
 	FVector Location = FVector(0, 0, 0);
 	FRotator Rotation = FRotator(0, 0, 0);
@@ -1428,9 +1425,9 @@ void FRoseImportModule::PluginButtonClicked()
 	Landscape->PreEditChange(NULL);
 
 	Landscape->SetActorScale3D(FVector(250.0f, 250.0f, 51200.0f / 51200.0f * 100.0f));
-
 	UMaterial* LMaterial = LoadObject<UMaterial>(NULL, TEXT("/Game/ROSEImp/Terrain/Junon/JD_Material.JD_Material"), NULL, LOAD_None, NULL);
 	Landscape->LandscapeMaterial = LMaterial;
+
 
 	TArray<FLandscapeImportLayerInfo> LayerInfos;
 	auto LayerNames = Landscape->GetLayersFromMaterial();
@@ -1494,7 +1491,7 @@ void FRoseImportModule::PluginButtonClicked()
 		p
 	);*/
 
-	Landscape->StaticLightingLOD = FMath::DivideAndRoundUp(FMath::CeilLogTwo((SizeX * SizeY) / (2048 * 2048) + 1), (uint32)2);
+	/*Landscape->StaticLightingLOD = FMath::DivideAndRoundUp(FMath::CeilLogTwo((SizeX * SizeY) / (2048 * 2048) + 1), (uint32)2);
 
 	Landscape->SetActorLocation(FVector((startX - 32) * 16000 - 8000, (startY - 32) * 16000 - 8000, 0));
 	Landscape->StaticLightingResolution = 4.0f;
@@ -1521,7 +1518,7 @@ void FRoseImportModule::PluginButtonClicked()
 
 	for (auto Component : Landscape->LandscapeComponents) {
 		Component->UpdateMaterialInstances();
-	}
+	}*/
 }
 
 void FRoseImportModule::AddMenuExtension(FMenuBuilder& Builder)

@@ -9,7 +9,9 @@ class FToolBarBuilder;
 class FMenuBuilder;
 
 const FString RosePackageName(TEXT("/Game/ROSEImp"));
-const FString RoseBasePath(TEXT("C:/Users/Wahid/Desktop/UnityRose/Assets/"));
+const FString RoseBasePath(TEXT("E:/Games/Ruff-Rose/"));
+
+
 
 class FRoseImportModule : public IModuleInterface
 {
