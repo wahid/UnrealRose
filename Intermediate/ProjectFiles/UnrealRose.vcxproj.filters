@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\UnrealRose.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{AB3D6DB9-BF1E-49F3-8F5D-459C6AF068EE}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\UnrealRose.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\UnrealRoseEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{73FBF1A7-0CA0-4ED1-BFA1-39E9BD4D51A3}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{9DC68A55-77A9-42AB-9EDD-8459FCCB6FB6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\RoseImport">
+      <UniqueIdentifier>{D44C2B59-34CD-4FE0-8956-350A97CB3B43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\RoseImport\Source">
+      <UniqueIdentifier>{87AA14D5-7786-4328-BCEF-E77F8B38B255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\RoseImport\Source\RoseImport">
+      <UniqueIdentifier>{33CE9F8D-B9FF-40DF-8EFE-83113C8F6321}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\RoseImport\Source\RoseImport\RoseImport.Build.cs">
+      <Filter>Plugins\RoseImport\Source\RoseImport</Filter>
+    </None>
+    <Filter Include="Plugins\RoseImport\Source\RoseImport\Private">
+      <UniqueIdentifier>{39D09F23-12D2-414B-A51F-D2629AF2F6A6}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\RoseImport\Source\RoseImport\Private\RoseImport.cpp">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\RoseImport\Source\RoseImport\Private\RoseImportCommands.cpp">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Plugins\RoseImport\Source\RoseImport\Private\RoseImportStyle.cpp">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Private</Filter>
+    </ClCompile>
+    <Filter Include="Plugins\RoseImport\Source\RoseImport\Public">
+      <UniqueIdentifier>{F362F9AD-373B-41B4-853B-AC1EF0D61C30}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\RoseImport.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\RoseImportCommands.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\RoseImportStyle.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <None Include="..\..\Plugins\RoseImport\RoseImport.uplugin">
+      <Filter>Plugins\RoseImport</Filter>
+    </None>
+    <Filter Include="Plugins\RoseImport\Resources">
+      <UniqueIdentifier>{070A5350-FA1F-4E33-AE3D-8E6A45941538}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\RoseImport\Resources\ButtonIcon_40x.png">
+      <Filter>Plugins\RoseImport\Resources</Filter>
+    </None>
+    <None Include="..\..\Plugins\RoseImport\Resources\Icon128.png">
+      <Filter>Plugins\RoseImport\Resources</Filter>
+    </None>
+    <Filter Include="Source\UnrealRose">
+      <UniqueIdentifier>{24AF2B5D-E990-40E2-AC75-D1AB61536817}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\UnrealRose\UnrealRose.Build.cs">
+      <Filter>Source\UnrealRose</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\UnrealRose\UnrealRose.cpp">
+      <Filter>Source\UnrealRose</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UnrealRose\UnrealRose.h">
+      <Filter>Source\UnrealRose</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UnrealRose\UnrealRoseGameModeBase.cpp">
+      <Filter>Source\UnrealRose</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UnrealRose\UnrealRoseGameModeBase.h">
+      <Filter>Source\UnrealRose</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Chr.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Common.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Him.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Ifo.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Til.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Zmd.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Zmo.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Zms.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\RoseImport\Source\RoseImport\Public\Zsc.h">
+      <Filter>Plugins\RoseImport\Source\RoseImport\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

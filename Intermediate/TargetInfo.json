@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "UnrealRose",
+			"Path": "E:\\UnrealRose\\UnrealRose\\Source\\UnrealRose.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "UnrealRoseEditor",
+			"Path": "E:\\UnrealRose\\UnrealRose\\Source\\UnrealRoseEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
