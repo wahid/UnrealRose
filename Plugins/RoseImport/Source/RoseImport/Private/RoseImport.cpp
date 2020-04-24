@@ -1145,7 +1145,7 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 
 			UEdGraphPin* PrevExecPin = TLNode->GetUpdatePin();
 			if (UsesRotation) {
-				UK2Node_CallFunction* MakeRotNode = CreateCallFuncNode(EventGraph, TEXT("KismetMathLibrary"), TEXT("MakeRot"));
+				/* UK2Node_CallFunction* MakeRotNode = CreateCallFuncNode(EventGraph, TEXT("KismetMathLibrary"), TEXT("MakeRot"));
 				UK2Node_CallFunction* BreakVecNode = CreateCallFuncNode(EventGraph, TEXT("KismetMathLibrary"), TEXT("BreakVector"));
 				UK2Node_CallFunction* SetRotNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeRotation"));
 
@@ -1157,25 +1157,25 @@ UBlueprint* ImportWorldZscModel(const FString& MdlTypeName, const Zsc& meshs, in
 				BreakVecNode->FindPin(TEXT("X"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Pitch")));
 				BreakVecNode->FindPin(TEXT("Y"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Yaw")));
 				BreakVecNode->FindPin(TEXT("Z"))->MakeLinkTo(MakeRotNode->FindPin(TEXT("Roll")));
-				//MakeRotNode->GetReturnValuePin()->MakeLinkTo(SetRotNode->FindPin(TEXT("NewRotation")));
+				MakeRotNode->GetReturnValuePin()->MakeLinkTo(SetRotNode->FindPin(TEXT("NewRotation"))); */
 			}
 
 			if (UsesPosition) {
-				UK2Node_CallFunction* SetPosNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeLocation"));
-				//PrevExecPin->MakeLinkTo(SetPosNode->GetExecPin());
-				//PrevExecPin = SetPosNode->GetThenPin();
+				/*UK2Node_CallFunction* SetPosNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeLocation"));
+				PrevExecPin->MakeLinkTo(SetPosNode->GetExecPin());
+				PrevExecPin = SetPosNode->GetThenPin();
 
 				GetNode->GetValuePin()->MakeLinkTo(SetPosNode->FindPin(TEXT("self")));
-				TLNode->FindPin(TEXT("Position"))->MakeLinkTo(SetPosNode->FindPin(TEXT("NewLocation")));
+				TLNode->FindPin(TEXT("Position"))->MakeLinkTo(SetPosNode->FindPin(TEXT("NewLocation")));*/
 			}
 
 			if (UsesScale) {
-				UK2Node_CallFunction* SetScaleNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeScale"));
+				/* UK2Node_CallFunction* SetScaleNode = CreateCallFuncNode<USceneComponent>(EventGraph, TEXT("SetRelativeScale"));
 				PrevExecPin->MakeLinkTo(SetScaleNode->GetExecPin());
 				PrevExecPin = SetScaleNode->GetThenPin();
 
 				GetNode->GetValuePin()->MakeLinkTo(SetScaleNode->FindPin(TEXT("self")));
-				TLNode->FindPin(TEXT("Scale"))->MakeLinkTo(SetScaleNode->FindPin(TEXT("NewScale3D")));
+				TLNode->FindPin(TEXT("Scale"))->MakeLinkTo(SetScaleNode->FindPin(TEXT("NewScale3D"))); */
 			}
 		}
 	}
@@ -1241,7 +1241,7 @@ void FRoseImportModule::PluginButtonClicked()
 
 	// Put your "OnButtonClicked" stuff here
 	FText DialogText = FText::Format(
-							LOCTEXT("PluginButtonDialogText", "Add code to {0} in {1} to override this button's actions, henek"),
+							LOCTEXT("Rose Import", "Click Ok to start importing Rose Data"),
 							FText::FromString(TEXT("FRoseImportModule::PluginButtonClicked()")),
 							FText::FromString(TEXT("RoseImport.cpp"))
 					   );
@@ -1394,7 +1394,7 @@ void FRoseImportModule::PluginButtonClicked()
 						obj.Position - RecenterPos, FRotator(obj.Rotation), SpawnInfo);
 
 					if (ObjColl) {
-						UCubeBuilder* Builder = NewObject<UCubeBuilder>(); // ConstructObject<UCubeBuilder>(UCubeBuilder::StaticClass());
+						UCubeBuilder* Builder = NewObject<UCubeBuilder>();
 						Builder->X = ColSize.X;
 						Builder->Y = ColSize.Y;
 						Builder->Z = ColSize.Z;
@@ -1417,7 +1417,6 @@ void FRoseImportModule::PluginButtonClicked()
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Imported map height bounds were: %f, %f"), MinHeight, MaxHeight);
-	return;
 
 	FVector Location = FVector(0, 0, 0);
 	FRotator Rotation = FRotator(0, 0, 0);
@@ -1425,7 +1424,9 @@ void FRoseImportModule::PluginButtonClicked()
 	Landscape->PreEditChange(NULL);
 
 	Landscape->SetActorScale3D(FVector(250.0f, 250.0f, 51200.0f / 51200.0f * 100.0f));
-	UMaterial* LMaterial = LoadObject<UMaterial>(NULL, TEXT("/Game/ROSEImp/Terrain/Junon/JD_Material.JD_Material"), NULL, LOAD_None, NULL);
+	//UMaterial* LMaterial = LoadObject<UMaterial>(NULL, TEXT("/Game/ROSEImp/Terrain/Junon/JD_Material.JD_Material"), NULL, LOAD_None, NULL);
+	UMaterial* LMaterial = LoadObject<UMaterial>(NULL, TEXT("/Game/StarterContent/Materials/Zant_Landscape"), NULL, 5, NULL);
+
 	Landscape->LandscapeMaterial = LMaterial;
 
 
@@ -1451,47 +1452,39 @@ void FRoseImportModule::PluginButtonClicked()
 		FLandscapeImportLayerInfo LayerInfo;
 		if (LayerName.Compare(TEXT("Dirt")) == 0) {
 			LayerInfo.LayerData = WeightData[0];
-			//UE_LOG(RosePlugin, Log, TEXT("Found Dirt Layer!"));
+			UE_LOG(LogTemp, Log, TEXT("Found Dirt Layer!"));
 		}
 		else if (LayerName.Compare(TEXT("Grass1")) == 0) {
 			LayerInfo.LayerData = WeightData[1];
-			//UE_LOG(RosePlugin, Log, TEXT("Found Grass1 Layer!"));
+			UE_LOG(LogTemp, Log, TEXT("Found Grass1 Layer!"));
 		}
 		else if (LayerName.Compare(TEXT("Grass2")) == 0) {
 			LayerInfo.LayerData = WeightData[3];
-			//UE_LOG(RosePlugin, Log, TEXT("Found Grass2 Layer!"));
+			UE_LOG(LogTemp, Log, TEXT("Found Grass2 Layer!"));
 		}
 		else if (LayerName.Compare(TEXT("Rock")) == 0) {
 			LayerInfo.LayerData = WeightData[5];
-			//UE_LOG(RosePlugin, Log, TEXT("Found Rock Layer!"));
+			UE_LOG(LogTemp, Log, TEXT("Found Rock Layer!"));
 		}
 		else {
-			LayerInfo.LayerData = WeightData[7];
-			//UE_LOG(RosePlugin, Log, TEXT("Found Unknown Layer (%s)!"), *(LayerName.ToString()));
+			LayerInfo.LayerData = WeightData[4];
+			UE_LOG(LogTemp, Log, TEXT("Found Unknown Layer (%s)!"), *(LayerName.ToString()));
 		}
 		LayerInfo.LayerName = LayerName;
 		LayerInfo.LayerInfo = LIData;
 		LayerInfos.Add(LayerInfo);
 	}
 
-	//ELandscapeImportAlphamapType p = ELandscapeImportAlphamapType::Additive;
+	ELandscapeImportAlphamapType p = ELandscapeImportAlphamapType::Additive;
+	TMap<FGuid, TArray<uint16>> HeightDataMap; 
+	TMap<FGuid, TArray<FLandscapeImportLayerInfo>> MaterialLayerInfoMap;
 
-	/* Landscape->Import(
-		FGuid::NewGuid(), 
-		0,
-		0, 
-		SizeX, 
-		SizeY, 
-		63, 
-		1, 
-		//63,
-		Data.GetData(), 
-		NULL, 
-		LayerInfos,
-		p
-	);*/
+	HeightDataMap.Add(FGuid(), Data);
+	MaterialLayerInfoMap.Add(FGuid(), LayerInfos);
+	Landscape->Import(FGuid::NewGuid(), 0, 0, SizeX - 1, SizeY - 1, 1, 63, HeightDataMap, NULL, MaterialLayerInfoMap, p, nullptr);
 
-	/*Landscape->StaticLightingLOD = FMath::DivideAndRoundUp(FMath::CeilLogTwo((SizeX * SizeY) / (2048 * 2048) + 1), (uint32)2);
+
+	Landscape->StaticLightingLOD = FMath::DivideAndRoundUp(FMath::CeilLogTwo((SizeX * SizeY) / (2048 * 2048) + 1), (uint32)2);
 
 	Landscape->SetActorLocation(FVector((startX - 32) * 16000 - 8000, (startY - 32) * 16000 - 8000, 0));
 	Landscape->StaticLightingResolution = 4.0f;
@@ -1518,7 +1511,7 @@ void FRoseImportModule::PluginButtonClicked()
 
 	for (auto Component : Landscape->LandscapeComponents) {
 		Component->UpdateMaterialInstances();
-	}*/
+	}
 }
 
 void FRoseImportModule::AddMenuExtension(FMenuBuilder& Builder)
